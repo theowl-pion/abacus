@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+output/
+scripts/backgrounds/*_raw.png
+node_modules/
+.DS_Store
+.claude/
+supabase/.temp/
