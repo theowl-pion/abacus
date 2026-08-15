@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Vettos",
-  description: "Aesthetic phone lock-screen wallpapers with short quotes — pick any 5 for 2.50€.",
+  description: "Internal AI image-generation tools: Abacus (batch generation) and Lab (model experimentation).",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

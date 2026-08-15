@@ -5,8 +5,12 @@ import JSZip from "jszip";
 
 export default function DownloadPack({
   items,
+  zipFilename = "vettos-wallpapers.zip",
+  errorMessage = "Something went wrong. Try again, or use the link in your email.",
 }: {
   items: { url: string; filename: string }[];
+  zipFilename?: string;
+  errorMessage?: string;
 }) {
   const [status, setStatus] = useState<"idle" | "zipping" | "done" | "error">(
     "idle",
@@ -27,7 +31,7 @@ export default function DownloadPack({
       const url = URL.createObjectURL(content);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "vettos-wallpapers.zip";
+      a.download = zipFilename;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -54,7 +58,7 @@ export default function DownloadPack({
       </button>
       {status === "error" && (
         <p className="text-sm text-red-600 dark:text-red-400">
-          Something went wrong. Try again, or use the link in your email.
+          {errorMessage}
         </p>
       )}
     </div>

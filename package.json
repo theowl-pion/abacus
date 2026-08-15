@@ -1,7 +1,7 @@
 {
   "name": "vettos",
   "private": true,
-  "description": "Aesthetic phone lock-screen wallpapers with short quotes, sold as 5-quote packs (15 wallpapers — all 3 palettes included per quote). See `project-brief.md` for the full concept, pricing, and architecture.",
+  "description": "Internal AI image-generation tools — Abacus (batch generation) and Lab (model experimentation). See README.md for setup.",
   "devDependencies": {
     "supabase": "^2.113.0"
   }

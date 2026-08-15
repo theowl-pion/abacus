@@ -1,7 +1,1 @@
 project_id = "nmvgwwfopmaqvckmpquv"
-
-# Stripe calls this function directly and authenticates via its own
-# stripe-signature header (verified in code) — it can't send a Supabase
-# auth token, so platform-level JWT verification must stay off for it.
-[functions.stripe-webhook]
-verify_jwt = false

@@ -5,7 +5,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export function wallpaperPublicUrl(imagePath: string) {
-  return supabase.storage.from("wallpapers").getPublicUrl(imagePath).data
+export function labImagePublicUrl(imagePath: string) {
+  return supabase.storage.from("lab-images").getPublicUrl(imagePath).data
     .publicUrl;
 }
