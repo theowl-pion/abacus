@@ -227,7 +227,7 @@ export default function AbacusPage() {
               : "rounded-full px-3 py-1 text-xs font-semibold text-zinc-500 disabled:cursor-not-allowed dark:text-zinc-400"
           }
         >
-          OpenAI (gpt-image-1)
+          OpenAI (gpt-image-2)
         </button>
       </div>
 

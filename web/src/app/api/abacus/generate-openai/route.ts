@@ -2,15 +2,17 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import sharp from "sharp";
 
-// gpt-image-1 is a synchronous call (no job-id/poll pattern like kie.ai), but
+// gpt-image-2 is a synchronous call (no job-id/poll pattern like kie.ai), but
 // generation now happens inside this function's lifetime instead of being
 // hidden behind client-side polling, so give it real headroom.
 export const maxDuration = 60;
 
-const MODEL = "gpt-image-1";
-// Closest native portrait preset — gpt-image-1 only supports 1024x1024,
-// 1024x1536, and 1536x1024. There is no native 9:16.
-const SIZE = "1024x1536" as const;
+const MODEL = "gpt-image-2";
+// gpt-image-2 accepts arbitrary sizes (both edges must be multiples of 16px),
+// unlike gpt-image-1's three fixed presets. 1088x1920 is the closest valid
+// size to true 9:16 (1080x1920) — off by 8px on the width, vs. the ~7.8%
+// per-side crop gpt-image-1 would have needed from its nearest fixed preset.
+const SIZE = "1088x1920" as const;
 const QUALITY =
   (process.env.OPENAI_IMAGE_QUALITY as "low" | "medium" | "high" | undefined) ??
   "medium";
@@ -95,10 +97,10 @@ export async function POST(request: Request) {
 
     const rawBuffer = Buffer.from(b64, "base64");
 
-    // Explicit crop step: gpt-image-1 has no native 9:16 size, so we generate
-    // at 1024x1536 (2:3) and center-crop to exactly 1080x1920 (9:16). This is
-    // a real, visible difference from kie.ai's native 9:16 output — content
-    // near the left/right edges of the prompt can get cropped out here.
+    // Explicit crop step: gpt-image-2 has no exact 1080-wide preset (edges
+    // must be multiples of 16px), so we generate at 1088x1920 and center-crop
+    // 8px total off the width to land on exactly 1080x1920. Negligible at
+    // this scale, but kept explicit rather than assumed.
     const cropped = await sharp(rawBuffer)
       .resize(TARGET_WIDTH, TARGET_HEIGHT, { fit: "cover", position: "centre" })
       .jpeg({ quality: 88 })

@@ -8,8 +8,9 @@ Internal AI image-generation tools, single-user, no auth.
   content. N prompt slots, "Generate All", zip download at the end. Two
   interchangeable backends, switchable in the UI:
   - kie.ai's GPT Image 2 (async job + poll)
-  - Direct OpenAI `gpt-image-1` (synchronous, concurrency-capped, with a
-    server-side crop to 1080×1920 since gpt-image-1 has no native 9:16 size)
+  - Direct OpenAI `gpt-image-2` (synchronous, concurrency-capped, requests
+    1088×1920 — the closest size the API allows to 9:16 — then a negligible
+    server-side crop down to exactly 1080×1920)
 - **Lab** (`/lab`) — experimental multi-model generator for Facebook profile
   pictures and cover photos, cropped to Facebook's real spec, with a
   generation history page (`/lab/history`) backed by Supabase.
