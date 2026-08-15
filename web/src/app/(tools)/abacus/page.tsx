@@ -198,7 +198,7 @@ export default function AbacusPage() {
     }));
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-6 px-6 py-10">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold tracking-tight text-black dark:text-white">
           Abacus
@@ -241,55 +241,15 @@ export default function AbacusPage() {
         Style: {ACTIVE_PROFILE.label}
       </p>
 
-      <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {slots.map((slot, i) => (
           <div
             key={slot.id}
-            className="flex flex-col gap-3 rounded-2xl border border-black/10 p-4 dark:border-white/10"
+            className="overflow-hidden rounded-2xl border border-black/10 dark:border-white/10"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-black dark:text-white">
-                Prompt {i + 1}
-              </span>
-              <button
-                type="button"
-                onClick={() => removeSlot(slot.id)}
-                disabled={slots.length <= MIN_SLOTS}
-                className="text-xs font-semibold text-zinc-500 transition hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-zinc-400 dark:hover:text-red-400"
-              >
-                Remove
-              </button>
-            </div>
-
-            <textarea
-              value={slot.prompt}
-              onChange={(e) => updatePrompt(slot.id, e.target.value)}
-              rows={4}
-              placeholder="Full, self-contained image-generation prompt…"
-              className="w-full rounded-xl border border-black/10 bg-white p-3 text-sm text-black dark:border-white/10 dark:bg-zinc-900 dark:text-white"
-            />
-
-            {slot.status === "generating" && (
-              <div
-                className="flex w-full items-center justify-center rounded-xl bg-zinc-100 text-sm text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
-                style={{ aspectRatio: "9 / 16", maxHeight: "16rem" }}
-              >
-                Generating…
-              </div>
-            )}
-
-            {slot.status === "error" && (
-              <p className="text-sm text-red-600 dark:text-red-400">
-                {slot.error}
-              </p>
-            )}
-
-            {slot.status === "done" && slot.imageUrl && (
-              <div className="flex flex-col items-start gap-2">
-                <div
-                  className="relative w-full max-w-[12rem] overflow-hidden rounded-xl"
-                  style={{ aspectRatio: "9 / 16" }}
-                >
+            {slot.status === "done" && slot.imageUrl ? (
+              <div>
+                <div className="relative w-full" style={{ aspectRatio: "9 / 16" }}>
                   <Image
                     src={slot.imageUrl}
                     alt={`Prompt ${i + 1} result`}
@@ -297,12 +257,60 @@ export default function AbacusPage() {
                     unoptimized
                     className="object-cover"
                   />
+                  <button
+                    type="button"
+                    onClick={() => removeSlot(slot.id)}
+                    disabled={slots.length <= MIN_SLOTS}
+                    className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-sm leading-none text-white backdrop-blur transition hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Remove"
+                  >
+                    ×
+                  </button>
                 </div>
-                <DownloadImageButton
-                  url={slot.imageUrl}
-                  filename={`abacus-${slot.id}.jpg`}
-                  className="rounded-full bg-black px-4 py-2 text-xs font-semibold text-white dark:bg-white dark:text-black"
+                <div className="flex items-center justify-between gap-2 bg-zinc-100 px-2.5 py-2 dark:bg-zinc-900">
+                  <p className="line-clamp-2 flex-1 text-xs text-zinc-600 dark:text-zinc-400">
+                    {slot.prompt}
+                  </p>
+                  <DownloadImageButton
+                    url={slot.imageUrl}
+                    filename={`abacus-${slot.id}.jpg`}
+                    className="flex-shrink-0 text-xs font-semibold text-black underline decoration-dotted underline-offset-2 dark:text-white"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 p-3" style={{ aspectRatio: "9 / 16" }}>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-black dark:text-white">
+                    Prompt {i + 1}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeSlot(slot.id)}
+                    disabled={slots.length <= MIN_SLOTS}
+                    className="text-xs font-semibold text-zinc-500 transition hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 dark:text-zinc-400 dark:hover:text-red-400"
+                  >
+                    Remove
+                  </button>
+                </div>
+
+                <textarea
+                  value={slot.prompt}
+                  onChange={(e) => updatePrompt(slot.id, e.target.value)}
+                  disabled={slot.status === "generating"}
+                  placeholder="Full, self-contained image-generation prompt…"
+                  className="w-full flex-1 resize-none bg-transparent p-0 text-xs text-black outline-none placeholder:text-zinc-400 disabled:opacity-50 dark:text-white dark:placeholder:text-zinc-500"
                 />
+
+                {slot.status === "generating" && (
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    Generating…
+                  </p>
+                )}
+
+                {slot.status === "error" && (
+                  <p className="text-xs text-red-600 dark:text-red-400">{slot.error}</p>
+                )}
               </div>
             )}
           </div>
