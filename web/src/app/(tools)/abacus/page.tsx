@@ -4,6 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import DownloadImageButton from "@/components/DownloadImageButton";
 import DownloadPack from "@/components/DownloadPack";
+import { PAGE_PROFILES, composePrompt } from "@/lib/pageProfiles";
+
+// TODO: replace with a user-selectable toggle once there's more than one page.
+const ACTIVE_PROFILE = PAGE_PROFILES[0];
 
 const MIN_SLOTS = 1;
 const DEFAULT_SLOTS = 6;
@@ -145,13 +149,15 @@ export default function AbacusPage() {
     try {
       if (backend === "openai") {
         await runPool(active, OPENAI_CONCURRENCY, (slot) =>
-          generateOpenAiSlot(slot.id, slot.prompt),
+          generateOpenAiSlot(slot.id, composePrompt(ACTIVE_PROFILE, slot.prompt)),
         );
       } else {
         const res = await fetch("/api/abacus/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompts: active.map((s) => s.prompt) }),
+          body: JSON.stringify({
+            prompts: active.map((s) => composePrompt(ACTIVE_PROFILE, s.prompt)),
+          }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "Failed to start batch");
@@ -230,6 +236,10 @@ export default function AbacusPage() {
           OpenAI (gpt-image-2)
         </button>
       </div>
+
+      <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+        Style: {ACTIVE_PROFILE.label}
+      </p>
 
       <div className="flex flex-col gap-4">
         {slots.map((slot, i) => (
