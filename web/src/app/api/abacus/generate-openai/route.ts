@@ -64,7 +64,9 @@ function mapOpenAiError(err: unknown): { message: string; status: number } {
 }
 
 export async function POST(request: Request) {
-  const apiKey = process.env.OPENAI_API_KEY;
+  // .trim() guards against a stray trailing space/newline in .env.local —
+  // that alone is enough to break Bearer auth and looks like an invalid key.
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
   }
